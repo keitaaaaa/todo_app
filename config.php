@@ -2,7 +2,7 @@
 
 // DB
 
-define('DSN', 'mysql:host=localhost;dbname=blog_app','root','root');
+define('DSN', 'mysql:host=localhost;dbname=todo_app;charset=utf8;');
 define('DB_USER', 'root');
 define('DB_PASSWORD', 'root');
 
