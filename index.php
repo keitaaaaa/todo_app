@@ -22,7 +22,7 @@ foreach ($dbh->query($sql) as $row) {
 <html lang="ja">
 <head>
 	<meta charset="utf-8">
-	<title>TODOアプリ</title>
+	<title>TODO</title>
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<style>
@@ -30,16 +30,24 @@ foreach ($dbh->query($sql) as $row) {
 		cursor: pointer;
 		color: blue;
 	}
+	.done {
+		text-decoration: line-through;
+		color: gray;
+	}
 	</style>
 </head>
 <body>
-<h1>TODOアプリ</h1>
+<h1>TODO</h1>
 <ul>
 	<?php foreach ($tasks as $task) : ?>
 	
 	<li id="task_<?php echo h($task['id']); ?>" data-id="<?php echo h($task['id']); ?>">
-
-		<?php echo h($task['title']); ?>
+		<input type="checkbox" class="checkTask"
+			<?php if ($task['type'] == "done") {
+				echo "checked"; } ?>
+		>
+		<span class="<?php echo h($task['type']); ?>">
+			<?php echo h($task['title']); ?></span>
 		<span class="deleteTask">[削除]</span>
 	</li>
 
@@ -47,6 +55,20 @@ foreach ($dbh->query($sql) as $row) {
 </ul>
 <script>
 $(function() {
+	$(document).on('click', '.checkTask', function() {
+		var id = $(this).parent().data('id');
+		var title = $(this).next();
+		$.post('_ajax_check_task.php', {
+			id: id
+		}, function(rs) {
+			if (title.hasClass('done')) {
+				title.removeClass('done');
+			} else {
+				title.addClass('done');
+			}
+		});
+	});
+
 	$(document).on('click', '.deleteTask', function() {
 		if (confirm('本当に削除しますか？')) {
 			var id = $(this).parent().data('id');
