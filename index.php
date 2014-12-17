@@ -26,7 +26,7 @@ foreach ($dbh->query($sql) as $row) {
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<style>
-	.deleteTask {
+	.deleteTask, .drag {
 		cursor: pointer;
 		color: blue;
 	}
@@ -38,7 +38,7 @@ foreach ($dbh->query($sql) as $row) {
 </head>
 <body>
 <h1>TODO</h1>
-<ul>
+<ul id="tasks">
 	<?php foreach ($tasks as $task) : ?>
 	
 	<li id="task_<?php echo h($task['id']); ?>" data-id="<?php echo h($task['id']); ?>">
@@ -48,13 +48,26 @@ foreach ($dbh->query($sql) as $row) {
 		>
 		<span class="<?php echo h($task['type']); ?>">
 			<?php echo h($task['title']); ?></span>
-		<span class="deleteTask">[削除]</span>
-	</li>
 
+		<span class="deleteTask">[削除]</span>
+		<span class="drag">[drag]</span>
+	</li>
 <?php endforeach; ?>
 </ul>
 <script>
 $(function() {
+
+	$('#tasks').sortable({
+		axis: 'y',
+		opacity: 0.2,
+		handle: '.drag',
+		update: function() {
+			$.post('_ajax_sort_task.php', {
+				task: $(this).sortable('serialize')
+			});
+		}
+	});
+
 	$(document).on('click', '.checkTask', function() {
 		var id = $(this).parent().data('id');
 		var title = $(this).next();
