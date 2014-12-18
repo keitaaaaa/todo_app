@@ -23,10 +23,10 @@ foreach ($dbh->query($sql) as $row) {
 <head>
 	<meta charset="utf-8">
 	<title>TODO</title>
-	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<style>
-	.deleteTask, .drag {
+	.deleteTask, .drag, .editTask {
 		cursor: pointer;
 		color: blue;
 	}
@@ -38,6 +38,7 @@ foreach ($dbh->query($sql) as $row) {
 </head>
 <body>
 <h1>TODO</h1>
+
 <ul id="tasks">
 	<?php foreach ($tasks as $task) : ?>
 	
@@ -49,6 +50,8 @@ foreach ($dbh->query($sql) as $row) {
 		<span class="<?php echo h($task['type']); ?>">
 			<?php echo h($task['title']); ?></span>
 
+		<span <?php if ($task['type']=="notyet") {
+			echo 'class="editTask"'; } ?>>[編集]</span>
 		<span class="deleteTask">[削除]</span>
 		<span class="drag">[drag]</span>
 	</li>
@@ -56,6 +59,33 @@ foreach ($dbh->query($sql) as $row) {
 </ul>
 <script>
 $(function() {
+	$(document).on('click', '.editTask', function() {
+		var id = $(this).parent().data('id');
+		var title = $(this).prev().text();
+		$('#task_'+id)
+			.empty()
+			.append($('<input type="text">').attr('value',title))
+			.append('<input type="button" value="更新" class="updateTask">');
+		$('#task_'+id+' input:eq(0)').focus();
+	});
+
+	$(document).on('click', '.updateTask', function() {
+		var id = $(this).parent().data('id');
+		var title = $(this).prev().val();
+		$.post('_ajax_update_task.php', {
+			id: id,
+			title: title
+		}, function(rs) {
+			var e = $(
+				'<input type="checkbox" class="checkTask"> ' + 
+				'<span></span> ' + 
+				'<span class="editTask">[編集]</span> ' + 
+				'<span class="deleteTask">[削除]</span> ' + 
+				'<span class="drag">[drag]</span>'
+			);
+			$('#task_'+id).empty().append(e).find('span:eq(0)').text(title);
+		});
+	});
 
 	$('#tasks').sortable({
 		axis: 'y',
@@ -75,9 +105,9 @@ $(function() {
 			id: id
 		}, function(rs) {
 			if (title.hasClass('done')) {
-				title.removeClass('done');
+				title.removeClass('done').next().addClass('editTask');
 			} else {
-				title.addClass('done');
+				title.addClass('done').next().removeClass('editTask');
 			}
 		});
 	});
@@ -88,7 +118,7 @@ $(function() {
 			$.post('_ajax_delete_task.php', {
 				id: id
 			}, function(rs) {
-				$('#task_'+id).fadeOut(800);
+				$('#task_'+id).fadeOut(500);
 			});
 		}
 	});
