@@ -38,7 +38,10 @@ foreach ($dbh->query($sql) as $row) {
 </head>
 <body>
 <h1>TODO</h1>
-
+<p>
+<input type="text" id="title">
+<input type="button" id="addTask" value="追加">
+</p>
 <ul id="tasks">
 	<?php foreach ($tasks as $task) : ?>
 	
@@ -59,6 +62,27 @@ foreach ($dbh->query($sql) as $row) {
 </ul>
 <script>
 $(function() {
+	$('#title').focus();
+
+	$('#addTask').click(function() {
+		var title = $('#title').val();
+		$.post('_ajax_add_task.php', {
+			title: title
+		}, function(rs) {
+			var e = $(
+				'<li id="task_'+rs+'" data-id="'+rs+'">' +
+				'<input type="checkbox" class="checkTask"> ' + 
+				'<span></span> ' + 
+				'<span class="editTask">[編集]</span> ' + 
+				'<span class="deleteTask">[削除]</span> ' + 
+				'<span class="drag">[drag]</span>' + 
+				'</li>'
+			);
+			$('#tasks').append(e).find('li:last span:eq(0)').text(title);
+			$('#title').val('').focus();
+		});
+	});
+
 	$(document).on('click', '.editTask', function() {
 		var id = $(this).parent().data('id');
 		var title = $(this).prev().text();

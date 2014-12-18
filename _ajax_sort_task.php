@@ -15,7 +15,7 @@ foreach ($task as $key => $val) {
 	$sql = "update tasks set seq = :seq where id = :id";
 	$stmt = $dbh->prepare($sql);
 	$stmt->execute(array(
-		":seq" => "key",
+		":seq" => $key,
 		":id" => $val
 	));
 }
