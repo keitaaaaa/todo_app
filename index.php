@@ -26,9 +26,21 @@ foreach ($dbh->query($sql) as $row) {
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<style>
+	ul {
+		width: 80%;
+	}
+	li {
+		list-style: none;
+		clear: both;
+	}
+	.main {
+		width: 60%;
+		margin: 0 auto; 
+	}
 	.deleteTask, .drag, .editTask {
 		cursor: pointer;
 		color: blue;
+		float: right;
 	}
 	.done {
 		text-decoration: line-through;
@@ -37,29 +49,32 @@ foreach ($dbh->query($sql) as $row) {
 	</style>
 </head>
 <body>
-<h1>TODO</h1>
-<p>
-<input type="text" id="title">
-<input type="button" id="addTask" value="追加">
-</p>
-<ul id="tasks">
-	<?php foreach ($tasks as $task) : ?>
-	
-	<li id="task_<?php echo h($task['id']); ?>" data-id="<?php echo h($task['id']); ?>">
-		<input type="checkbox" class="checkTask"
-			<?php if ($task['type'] == "done") {
-				echo "checked"; } ?>
-		>
-		<span class="<?php echo h($task['type']); ?>">
-			<?php echo h($task['title']); ?></span>
+	<div class="main">
+	<h1>TODO</h1>
+	<p>
+	<input type="text" id="title">
+	<input type="button" id="addTask" value="追加">
+	</p>
+	<ul id="tasks">
+		<?php foreach ($tasks as $task) : ?>
+		
+		<li id="task_<?php echo h($task['id']); ?>"
+			data-id="<?php echo h($task['id']); ?>" >
+			<input type="checkbox" class="checkTask"
+				<?php if ($task['type'] == "done") {
+					echo "checked"; } ?>
+			>
+			<span class="<?php echo h($task['type']); ?>">
+				<?php echo h($task['title']); ?></span>
 
-		<span <?php if ($task['type']=="notyet") {
-			echo 'class="editTask"'; } ?>>[編集]</span>
-		<span class="deleteTask">[削除]</span>
-		<span class="drag">[drag]</span>
-	</li>
-<?php endforeach; ?>
-</ul>
+			<span <?php if ($task['type']=="notyet") {
+				echo 'class="editTask"'; } ?>>[編集]</span>
+			<span class="deleteTask">[削除]</span>
+			<span class="drag">[drag]</span>
+		</li>
+	<?php endforeach; ?>
+	</ul>
+</div>
 <script>
 $(function() {
 	$('#title').focus();
