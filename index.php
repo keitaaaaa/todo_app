@@ -26,55 +26,106 @@ foreach ($dbh->query($sql) as $row) {
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<style>
-	ul {
-		width: 80%;
+	body {
+		background-image: url("cloud.jpg");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-attachment: fixed;
+		background-color: #464646;
+		color: white;
+		text-shadow: 2px 2px 2px #999999;
+	}
+	h1 {
+		font-size: 350%;
+		line-height: 10px;
 	}
 	li {
-		list-style: none;
+		list-style-type: upper-roman;
+		line-height: 50px;
+		font-size: 120%;
 		clear: both;
 	}
+
 	.main {
-		width: 60%;
-		margin: 0 auto; 
+		width: 900px;
+		margin: 0 auto;
 	}
+	.add {
+		width: 38%;
+		float: right;
+		margin-top: 20%;
+	}
+	#tasks {
+		width: 50%;
+		font-size: 150%;
+		margin-top: 16%;
+		margin-left: 20px;
+		float: left;
+	}
+
 	.deleteTask, .drag, .editTask {
 		cursor: pointer;
 		color: blue;
+		font-size: 70%;
 		float: right;
+		margin-left: 5px;
 	}
 	.done {
 		text-decoration: line-through;
 		color: gray;
 	}
+	.noedit {
+		float: right;
+		margin-left: 5px;
+	}
+	.button {
+		font-size: 1.2em;
+		font-weight: bold;
+		padding: 8px 25px;
+		border-style: none;
+		background-color: #178;
+		color: white;
+		cursor: pointer;
+	}
 	</style>
 </head>
 <body>
 	<div class="main">
-	<h1>TODO</h1>
-	<p>
-	<input type="text" id="title">
-	<input type="button" id="addTask" value="追加">
-	</p>
-	<ul id="tasks">
-		<?php foreach ($tasks as $task) : ?>
-		
-		<li id="task_<?php echo h($task['id']); ?>"
-			data-id="<?php echo h($task['id']); ?>" >
-			<input type="checkbox" class="checkTask"
-				<?php if ($task['type'] == "done") {
-					echo "checked"; } ?>
-			>
-			<span class="<?php echo h($task['type']); ?>">
-				<?php echo h($task['title']); ?></span>
+		<div class="add">
+			<h1>Roles</h1>
+			<h3>あなたの役割は何ですか？</h3>
+			<p>
+			<input type="text" id="title" style="width: 250px;"><br>
+			<br>
+			<button class="button" id="addTask">追加</button>
+			</p>
+			<!-- <button class="button">Next</button> -->
+		</div>
+		<ul id="tasks">
+			<?php foreach ($tasks as $task) : ?>
+			
+			<li id="task_<?php echo h($task['id']); ?>"
+				data-id="<?php echo h($task['id']); ?>" >
+				<!-- <input type="checkbox" class="checkTask"
+					<?php if ($task['type'] == "done") {
+						echo "checked"; } ?>
+				> -->
+				<span class="<?php echo h($task['type']); ?>">
+					<?php echo h($task['title']); ?></span>
 
-			<span <?php if ($task['type']=="notyet") {
-				echo 'class="editTask"'; } ?>>[編集]</span>
-			<span class="deleteTask">[削除]</span>
-			<span class="drag">[drag]</span>
-		</li>
-	<?php endforeach; ?>
-	</ul>
-</div>
+				<!-- <span class="drag">[drag]</span> -->
+				<span class="deleteTask">削除</span>
+				<!-- <span <?php if ($task['type']=="notyet") {
+						echo 'class="editTask"';
+					} else {
+						echo 'class="noedit"';
+					} ?>>[編集]</span> -->
+			</li>
+
+		<?php endforeach; ?>
+		</ul>
+	</div>
 <script>
 $(function() {
 	$('#title').focus();
@@ -86,11 +137,11 @@ $(function() {
 		}, function(rs) {
 			var e = $(
 				'<li id="task_'+rs+'" data-id="'+rs+'">' +
-				'<input type="checkbox" class="checkTask"> ' + 
+				// '<input type="checkbox" class="checkTask"> ' + 
 				'<span></span> ' + 
-				'<span class="editTask">[編集]</span> ' + 
-				'<span class="deleteTask">[削除]</span> ' + 
-				'<span class="drag">[drag]</span>' + 
+				// '<span class="drag">[drag]</span>' + 
+				'<span class="deleteTask">削除</span> ' + 
+				// '<span class="editTask">[編集]</span> ' + 
 				'</li>'
 			);
 			$('#tasks').append(e).find('li:last span:eq(0)').text(title);
@@ -118,9 +169,9 @@ $(function() {
 			var e = $(
 				'<input type="checkbox" class="checkTask"> ' + 
 				'<span></span> ' + 
-				'<span class="editTask">[編集]</span> ' + 
+				'<span class="drag">[drag]</span>' + 
 				'<span class="deleteTask">[削除]</span> ' + 
-				'<span class="drag">[drag]</span>'
+				'<span class="editTask">[編集]</span> '
 			);
 			$('#task_'+id).empty().append(e).find('span:eq(0)').text(title);
 		});
@@ -144,9 +195,17 @@ $(function() {
 			id: id
 		}, function(rs) {
 			if (title.hasClass('done')) {
-				title.removeClass('done').next().addClass('editTask');
+				title
+					.removeClass('done')
+				.next().next().next()
+					.addClass('editTask')
+					.removeClass('noedit');
 			} else {
-				title.addClass('done').next().removeClass('editTask');
+				title
+					.addClass('done')
+				.next().next().next()
+					.removeClass('editTask')
+					.addClass('noedit');
 			}
 		});
 	});
