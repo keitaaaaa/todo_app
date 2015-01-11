@@ -22,111 +22,185 @@ foreach ($dbh->query($sql) as $row) {
 <html lang="ja">
 <head>
 	<meta charset="utf-8">
-	<title>TODO</title>
+	<title>Task Manegement</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-	<style>
-	body {
-		background-image: url("cloud.jpg");
-		background-size: cover;
-		background-repeat: no-repeat;
-		background-position: center center;
-		background-attachment: fixed;
-		background-color: #464646;
-		color: white;
-		text-shadow: 2px 2px 2px #999999;
-	}
-	h1 {
-		font-size: 350%;
-		line-height: 10px;
-	}
-	li {
-		list-style-type: upper-roman;
-		line-height: 50px;
-		font-size: 120%;
-		clear: both;
-	}
-
-	.main {
-		width: 900px;
-		margin: 0 auto;
-	}
-	.add {
-		width: 38%;
-		float: right;
-		margin-top: 20%;
-	}
-	#tasks {
-		width: 50%;
-		font-size: 150%;
-		margin-top: 16%;
-		margin-left: 20px;
-		float: left;
-	}
-
-	.deleteTask, .drag, .editTask {
-		cursor: pointer;
-		color: blue;
-		font-size: 70%;
-		float: right;
-		margin-left: 5px;
-	}
-	.done {
-		text-decoration: line-through;
-		color: gray;
-	}
-	.noedit {
-		float: right;
-		margin-left: 5px;
-	}
-	.button {
-		font-size: 1.2em;
-		font-weight: bold;
-		padding: 8px 25px;
-		border-style: none;
-		background-color: #178;
-		color: white;
-		cursor: pointer;
-	}
-	</style>
+	<link rel='stylesheet' href='style.css' />
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700' rel='stylesheet' type='text/css'>
+	
 </head>
 <body>
-	<div class="main">
-		<div class="add">
-			<h1>Roles</h1>
-			<h3>あなたの役割は何ですか？</h3>
-			<p>
-			<input type="text" id="title" style="width: 250px;"><br>
-			<br>
-			<button class="button" id="addTask">追加</button>
-			</p>
-			<!-- <button class="button">Next</button> -->
-		</div>
-		<ul id="tasks">
-			<?php foreach ($tasks as $task) : ?>
-			
-			<li id="task_<?php echo h($task['id']); ?>"
-				data-id="<?php echo h($task['id']); ?>" >
-				<!-- <input type="checkbox" class="checkTask"
-					<?php if ($task['type'] == "done") {
-						echo "checked"; } ?>
-				> -->
-				<span class="<?php echo h($task['type']); ?>">
-					<?php echo h($task['title']); ?></span>
-
-				<!-- <span class="drag">[drag]</span> -->
-				<span class="deleteTask">削除</span>
-				<!-- <span <?php if ($task['type']=="notyet") {
-						echo 'class="editTask"';
-					} else {
-						echo 'class="noedit"';
-					} ?>>[編集]</span> -->
+	<div class="header">
+		<h1>Task Management</h1>
+		<ul>
+			<li>
+				<?php echo "Logout"; ?>
 			</li>
-
-		<?php endforeach; ?>
 		</ul>
 	</div>
+
+	<div class="main">
+		<div class="side">
+			<ul id="tasks">
+				<h2>Your Tasks</h2>
+				<?php foreach ($tasks as $task) : ?>
+					<li id="task_<?php echo h($task['id']); ?>"
+						data-id="<?php echo h($task['id']); ?>" >
+						<span class="<?php echo h($task['type']); ?>">
+							<?php echo h($task['title']); ?></span>
+
+						<span class="drag">移動</span>
+						<span class="deleteTask">削除</span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<div class="add">
+				<p>
+					<form>
+				<input type="text" id="title" style="width: 260px; float: left;">
+				<button class="button" id="addTask">Add</button>
+				</form>
+				</p>
+			</div>
+		</div>
+		
+		<div class="this_week">
+			<ul class="accordion">
+				<h2>This Week</h2>
+				<li>
+					<p><span>Mon 5</span></p>
+					<ul>
+						<li><a>リスト 1-1</a></li>
+						<li><a>リスト 1-2</a></li>
+						<li><a>リスト 1-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Tue 6</span></p>
+					<ul>
+						<li><a>リスト 2-1</a></li>
+						<li><a>リスト 2-2</a></li>
+						<li><a>リスト 2-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Wed 7</span></p>
+					<ul>
+						<li><a>リスト 3-1</a></li>
+						<li><a>リスト 3-2</a></li>
+						<li><a>リスト 3-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Thu 8</span></p>
+					<ul>
+						<li><a>リスト 4-1</a></li>
+						<li><a>リスト 4-2</a></li>
+						<li><a>リスト 4-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Fri 9</span></p>
+					<ul>
+						<li><a>リスト 5-1</a></li>
+						<li><a>リスト 5-2</a></li>
+						<li><a>リスト 5-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Sat 10</span></p>
+					<ul>
+						<li><a>リスト 6-1</a></li>
+						<li><a>リスト 6-2</a></li>
+						<li><a>リスト 6-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Sun 11</span></p>
+					<ul>
+						<li><a>リスト 7-1</a></li>
+						<li><a>リスト 7-2</a></li>
+						<li><a>リスト 7-3</a></li>
+					</ul>
+				</li>	
+			</ul>
+		</div>
+		<div class="next_week">
+			<ul class="accordion">
+				<h2>Next Week</h2>
+				<li>
+					<p><span>Mon 12</span></p>
+					<ul>
+						<li><a>リスト 1-1</a></li>
+						<li><a>リスト 1-2</a></li>
+						<li><a>リスト 1-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Tue 13</span></p>
+					<ul>
+						<li><a>リスト 2-1</a></li>
+						<li><a>リスト 2-2</a></li>
+						<li><a>リスト 2-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Wed 14</span></p>
+					<ul>
+						<li><a>リスト 3-1</a></li>
+						<li><a>リスト 3-2</a></li>
+						<li><a>リスト 3-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Thu 15</span></p>
+					<ul>
+						<li><a>リスト 4-1</a></li>
+						<li><a>リスト 4-2</a></li>
+						<li><a>リスト 4-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Fri 16</span></p>
+					<ul>
+						<li><a>リスト 5-1</a></li>
+						<li><a>リスト 5-2</a></li>
+						<li><a>リスト 5-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Sat 17</span></p>
+					<ul>
+						<li><a>リスト 6-1</a></li>
+						<li><a>リスト 6-2</a></li>
+						<li><a>リスト 6-3</a></li>
+					</ul>
+				</li>
+				<li>
+					<p><span>Sun 18</span></p>
+					<ul>
+						<li><a>リスト 7-1</a></li>
+						<li><a>リスト 7-2</a></li>
+						<li><a>リスト 7-3</a></li>
+					</ul>
+				</li>	
+			</ul>
+		</div>
+	</div>
+
+	<div class="footer">
+		<ul>
+			<li>
+				<?php echo "ご利用規約"; ?>
+			</li>
+			<li>
+				<?php echo "お問い合わせ"; ?>
+			</li>
+		</ul>
+
+	</div>
 <script>
+/* タスク追加操作 */
 $(function() {
 	$('#title').focus();
 
@@ -139,9 +213,8 @@ $(function() {
 				'<li id="task_'+rs+'" data-id="'+rs+'">' +
 				// '<input type="checkbox" class="checkTask"> ' + 
 				'<span></span> ' + 
-				// '<span class="drag">[drag]</span>' + 
+				'<span class="drag">移動</span>' + 
 				'<span class="deleteTask">削除</span> ' + 
-				// '<span class="editTask">[編集]</span> ' + 
 				'</li>'
 			);
 			$('#tasks').append(e).find('li:last span:eq(0)').text(title);
@@ -219,6 +292,21 @@ $(function() {
 				$('#task_'+id).fadeOut(500);
 			});
 		}
+	});
+});
+
+/* アコーディオン */
+$(function(){
+	$(".accordion p").click(function(){
+		$(this).next("ul").slideToggle();
+		$(this).children("span").toggleClass("open");
+	});
+
+	$(".accordion dt").click(function(){
+		$(this).next("dd").slideToggle();
+		$(this).next("dd").siblings("dd").slideUp();
+		$(this).toggleClass("open");
+		$(this).siblings("dt").removeClass("open");
 	});
 });
 </script>
